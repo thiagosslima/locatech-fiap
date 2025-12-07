@@ -5,19 +5,19 @@ DROP TABLE IF EXISTS rent;
 CREATE TABLE vehicles
 (
     id               BIGINT AUTO_INCREMENT PRIMARY KEY,
-    mark             VARCHAR(50),
-    model            VARCHAR(50),
-    plate            VARCHAR(10),
-    manufacture_year INT,
+    mark             VARCHAR(50) NOT NULL,
+    model            VARCHAR(50) NOT NULL,
+    plate            VARCHAR(10) NOT NULL,
+    manufacture_year INT NOT NULL,
     color            VARCHAR(30),
-    daily_value      DECIMAL(10, 2)
+    daily_value      DECIMAL(10, 2) NOT NULL
 );
 
 CREATE TABLE persons
 (
     id       BIGINT AUTO_INCREMENT PRIMARY KEY,
     name     VARCHAR(100) NOT NULL,
-    document VARCHAR(30),
+    document VARCHAR(30) NOT NULL,
     phone    VARCHAR(30),
     email    VARCHAR(100)
 );
@@ -29,7 +29,7 @@ CREATE TABLE rent
     vehicle_id BIGINT NOT NULL,
     start_date DATE   NOT NULL,
     end_date   DATE,
-    price      DECIMAL(10, 2),
+    price      DECIMAL(10, 2) NOT NULL,
     FOREIGN KEY (person_id) REFERENCES persons (id),
     FOREIGN KEY (vehicle_id) REFERENCES vehicles (id)
 );

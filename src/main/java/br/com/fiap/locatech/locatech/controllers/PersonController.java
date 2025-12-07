@@ -1,10 +1,12 @@
 package br.com.fiap.locatech.locatech.controllers;
 
-import br.com.fiap.locatech.locatech.entities.Person;
+import br.com.fiap.locatech.locatech.dtos.request.PersonRequestDto;
+import br.com.fiap.locatech.locatech.dtos.response.PersonResponseDto;
 import br.com.fiap.locatech.locatech.services.PersonServices;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +35,7 @@ public class PersonController {
             }
     )
     @GetMapping
-    public ResponseEntity<List<Person>> findAllPerson(
+    public ResponseEntity<List<PersonResponseDto>> findAllPerson(
             @RequestParam("page") int page,
             @RequestParam("size") int size
     ) {
@@ -50,7 +52,7 @@ public class PersonController {
             }
     )
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Person>> findPersonById(
+    public ResponseEntity<Optional<PersonResponseDto>> findPersonById(
             @PathVariable("id") Long id
     ) {
         log.info("GET /person/{}", id);
@@ -60,20 +62,20 @@ public class PersonController {
 
     @PostMapping
     public ResponseEntity<Void> savePerson(
-            @RequestBody Person person
+            @Valid @RequestBody PersonRequestDto dto
     ) {
-        log.info("POST /person - Person: {}", person);
-        personServices.savePerson(person);
+        log.info("POST /person - Person: {}", dto);
+        personServices.savePerson(dto);
         return ResponseEntity.status(201).build();
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updatePerson(
             @PathVariable("id") Long id,
-            @RequestBody Person person
+            @Valid @RequestBody PersonRequestDto dto
     ) {
         log.info("PUT /person/{}", id);
-        personServices.updatePerson(person, id);
+        personServices.updatePerson(dto, id);
         return ResponseEntity.ok().build();
     }
 

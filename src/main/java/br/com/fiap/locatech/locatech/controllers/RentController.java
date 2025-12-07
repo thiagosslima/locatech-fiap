@@ -1,6 +1,7 @@
 package br.com.fiap.locatech.locatech.controllers;
 
-import br.com.fiap.locatech.locatech.dtos.RentRequestDto;
+import br.com.fiap.locatech.locatech.dtos.request.RentRequestDto;
+import br.com.fiap.locatech.locatech.dtos.response.RentResponseDto;
 import br.com.fiap.locatech.locatech.entities.Rent;
 import br.com.fiap.locatech.locatech.services.RentServices;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,7 +27,7 @@ public class RentController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Rent>> findAllRent(
+    public ResponseEntity<List<RentResponseDto>> findAllRent(
             @RequestParam("page") int page,
             @RequestParam("size") int size
     ) {
@@ -36,7 +37,7 @@ public class RentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Rent>> findRentById(
+    public ResponseEntity<Optional<RentResponseDto>> findRentById(
             @PathVariable("id") Long id
     ) {
         log.info("GET /rent/{}", id);

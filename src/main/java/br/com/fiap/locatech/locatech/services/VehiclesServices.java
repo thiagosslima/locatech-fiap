@@ -1,6 +1,9 @@
 package br.com.fiap.locatech.locatech.services;
 
+import br.com.fiap.locatech.locatech.dtos.request.VehicleRequestDto;
+import br.com.fiap.locatech.locatech.dtos.response.VehicleResponseDto;
 import br.com.fiap.locatech.locatech.entities.Vehicle;
+import br.com.fiap.locatech.locatech.exceptions.ResourceNotFoundException;
 import br.com.fiap.locatech.locatech.repositories.VehicleRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -17,31 +20,36 @@ public class VehiclesServices {
         this.vehicleRepository = vehicleRepository;
     }
 
-    public List<Vehicle> findAllVehicles(int page, int size) {
+    public List<VehicleResponseDto> findAllVehicles(int page, int size) {
         int offset = (page - 1) * size;
-        return vehicleRepository.findAll(size, offset);
+        var vehicle = vehicleRepository.findAll(size, offset);
+        return vehicle.stream()
+                .map(VehicleResponseDto::new)
+                .toList();
     }
 
-    public Optional<Vehicle> findVehicleById(Long id) {
-        return vehicleRepository.findById(id);
+    public Optional<VehicleResponseDto> findVehicleById(Long id) {
+        return Optional.ofNullable(vehicleRepository.findById(id)
+                .map(VehicleResponseDto::new)
+                .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found " + id)));
     }
 
-    public void saveVehicle(Vehicle vehicle) {
-        var save = vehicleRepository.save(vehicle);
-        Assert.state(save == 1, "Error saving vehicle " + vehicle.getModel());
+    public void saveVehicle(VehicleRequestDto dto) {
+        var save = vehicleRepository.save(new Vehicle(dto));
+        Assert.state(save == 1, "Error saving vehicle " + dto.model());
     }
 
-    public void updateVehicle(Vehicle vehicle, Long id) {
-        var update = vehicleRepository.update(vehicle, id);
+    public void updateVehicle(VehicleRequestDto dto, Long id) {
+        var update = vehicleRepository.update(new Vehicle(dto), id);
         if (update == 0) {
-            throw new RuntimeException("Vehicle not found " + vehicle.getModel());
+            throw new ResourceNotFoundException("Vehicle not found " + id);
         }
     }
 
     public void deleteVehicle(Long id) {
         var delete = vehicleRepository.delete(id);
         if (delete == 0) {
-            throw new RuntimeException("Vehicle not found " + id);
+            throw new ResourceNotFoundException("Vehicle not found " + id);
         }
     }
 }

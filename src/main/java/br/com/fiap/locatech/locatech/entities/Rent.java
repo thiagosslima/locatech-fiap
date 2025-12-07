@@ -1,6 +1,6 @@
 package br.com.fiap.locatech.locatech.entities;
 
-import br.com.fiap.locatech.locatech.dtos.RentRequestDto;
+import br.com.fiap.locatech.locatech.dtos.request.RentRequestDto;
 import lombok.*;
 
 import java.math.BigDecimal;

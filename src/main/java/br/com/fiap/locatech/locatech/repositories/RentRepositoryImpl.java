@@ -79,4 +79,14 @@ public class RentRepositoryImpl implements RentRepository {
                 .param("id", id)
                 .update();
     }
+
+    @Override
+    public boolean existsById(Long vehicleId) {
+        return this.jdbcClient
+                .sql("SELECT 1 FROM rent WHERE vehicle_id = :vehicleId LIMIT 1")
+                .param("vehicleId", vehicleId)
+                .query(Integer.class)
+                .optional()
+                .isPresent();
+    }
 }

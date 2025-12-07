@@ -1,6 +1,7 @@
 package br.com.fiap.locatech.locatech.controllers;
 
-import br.com.fiap.locatech.locatech.entities.Vehicle;
+import br.com.fiap.locatech.locatech.dtos.request.VehicleRequestDto;
+import br.com.fiap.locatech.locatech.dtos.response.VehicleResponseDto;
 import br.com.fiap.locatech.locatech.services.VehiclesServices;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
@@ -25,7 +26,7 @@ public class VehicleController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Vehicle>> findAllVehicles(
+    public ResponseEntity<List<VehicleResponseDto>> findAllVehicles(
             @RequestParam("page") int page,
             @RequestParam("size") int size
     ) {
@@ -35,7 +36,7 @@ public class VehicleController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Vehicle>> findVehicleById(
+    public ResponseEntity<Optional<VehicleResponseDto>> findVehicleById(
             @PathVariable("id") Long id
     ) {
         log.info("GET /vehicles/{}", id);
@@ -45,20 +46,20 @@ public class VehicleController {
 
     @PostMapping
     public ResponseEntity<Void> saveVehicle(
-            @RequestBody Vehicle vehicle
-    ) {
-        log.info("POST /vehicles - Vehicle: {}", vehicle);
-        vehiclesServices.saveVehicle(vehicle);
+            @RequestBody VehicleRequestDto dto
+            ) {
+        log.info("POST /vehicles - Vehicle: {}", dto);
+        vehiclesServices.saveVehicle(dto);
         return ResponseEntity.status(201).build();
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateVehicle(
             @PathVariable("id") Long id,
-            @RequestBody Vehicle vehicle
+            @RequestBody VehicleRequestDto dto
     ) {
         log.info("PUT /vehicles/{}", id);
-        vehiclesServices.updateVehicle(vehicle, id);
+        vehiclesServices.updateVehicle(dto, id);
         return ResponseEntity.ok().build();
     }
 

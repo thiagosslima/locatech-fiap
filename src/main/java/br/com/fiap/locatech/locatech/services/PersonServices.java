@@ -1,6 +1,9 @@
 package br.com.fiap.locatech.locatech.services;
 
+import br.com.fiap.locatech.locatech.dtos.request.PersonRequestDto;
+import br.com.fiap.locatech.locatech.dtos.response.PersonResponseDto;
 import br.com.fiap.locatech.locatech.entities.Person;
+import br.com.fiap.locatech.locatech.exceptions.ResourceNotFoundException;
 import br.com.fiap.locatech.locatech.repositories.PersonRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -17,31 +20,36 @@ public class PersonServices {
         this.personRepository = personRepository;
     }
 
-    public List<Person> findAllPerson(int page, int size) {
+    public List<PersonResponseDto> findAllPerson(int page, int size) {
         int offset = (page - 1) * size;
-        return personRepository.findAll(size, offset);
+        var person = personRepository.findAll(size, offset);
+        return person.stream()
+                .map(PersonResponseDto::new)
+                .toList();
     }
 
-    public Optional<Person> findPersonById(Long id) {
-        return personRepository.findById(id);
+    public Optional<PersonResponseDto> findPersonById(Long id) {
+        return Optional.ofNullable(personRepository.findById(id)
+                .map(PersonResponseDto::new)
+                .orElseThrow(() -> new ResourceNotFoundException("Person not found " + id)));
     }
 
-    public void savePerson(Person person) {
-        var save = personRepository.save(person);
-        Assert.state(save == 1, "Error saving person " + person.getName());
+    public void savePerson(PersonRequestDto dto) {
+        var save = personRepository.save(new Person(dto));
+        Assert.state(save == 1, "Error saving person " + dto.name());
     }
 
-    public void updatePerson(Person person, Long id) {
-        var update = personRepository.update(person, id);
+    public void updatePerson(PersonRequestDto dto, Long id) {
+        var update = personRepository.update(new Person(dto), id);
         if (update == 0) {
-            throw new RuntimeException("Person not found " + person.getId());
+            throw new ResourceNotFoundException("Person not found " + id);
         }
     }
 
     public void deletePerson(Long id) {
         var delete = personRepository.delete(id);
         if (delete == 0) {
-            throw new RuntimeException("Person not found " + id);
+            throw new ResourceNotFoundException("Person not found " + id);
         }
     }
 }

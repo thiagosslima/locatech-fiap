@@ -1,4 +1,4 @@
-package br.com.fiap.locatech.locatech.dtos;
+package br.com.fiap.locatech.locatech.dtos.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
@@ -13,6 +13,5 @@ public record RentRequestDto(
         Long vehicleId,
         @NotNull(message = "Start date cannot be null")
         LocalDate startDate,
-        @NotNull(message = "End date cannot be null")
         LocalDate endDate) {
 }
