@@ -14,14 +14,14 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/v1/rent")
+@RequestMapping("/v2/rent")
 @Tag(name = "Rent", description = "Controller responsible for rent operations - CRUD")
-public class RentController {
+public class RentControllerV2 {
 
-    private static final Logger log = LoggerFactory.getLogger(RentController.class);
+    private static final Logger log = LoggerFactory.getLogger(RentControllerV2.class);
     private final RentServices rentServices;
 
-    public RentController(RentServices rentServices) {
+    public RentControllerV2(RentServices rentServices) {
         this.rentServices = rentServices;
     }
 

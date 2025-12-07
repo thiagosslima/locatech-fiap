@@ -2,6 +2,9 @@ package br.com.fiap.locatech.locatech.controllers;
 
 import br.com.fiap.locatech.locatech.entities.Person;
 import br.com.fiap.locatech.locatech.services.PersonServices;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +14,8 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/person")
+@RequestMapping("/v1/person")
+@Tag(name = "Person", description = "Controller responsible for person operations - CRUD")
 public class PersonController {
 
     private static final Logger log = LoggerFactory.getLogger(PersonController.class);
@@ -21,6 +25,13 @@ public class PersonController {
         this.personServices = personServices;
     }
 
+    @Operation(
+            description = "Find all people with pagination",
+            summary = "Find all people with pagination",
+            responses = {
+                    @ApiResponse(description = "Ok", responseCode = "200")
+            }
+    )
     @GetMapping
     public ResponseEntity<List<Person>> findAllPerson(
             @RequestParam("page") int page,
@@ -31,6 +42,13 @@ public class PersonController {
         return ResponseEntity.ok(person);
     }
 
+    @Operation(
+            description = "Find all person by their ID",
+            summary = "Find all person by their ID",
+            responses = {
+                    @ApiResponse(description = "Ok", responseCode = "200")
+            }
+    )
     @GetMapping("/{id}")
     public ResponseEntity<Optional<Person>> findPersonById(
             @PathVariable("id") Long id
