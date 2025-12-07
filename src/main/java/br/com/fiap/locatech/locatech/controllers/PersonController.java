@@ -63,7 +63,7 @@ public class PersonController {
     public ResponseEntity<Void> deletePerson(
             @PathVariable("id") Long id
     ) {
-        log.info("DELETE /person?id={}", id);
+        log.info("DELETE /person/{}", id);
         personServices.deletePerson(id);
         return ResponseEntity.ok().build();
     }

@@ -64,7 +64,7 @@ public class VehicleController {
     public ResponseEntity<Void> deleteVehicle(
             @PathVariable("id") Long id
     ) {
-        log.info("DELETE /vehicles?id={}", id);
+        log.info("DELETE /vehicles/{}", id);
         vehiclesServices.deleteVehicle(id);
         return ResponseEntity.ok().build();
     }
