@@ -57,7 +57,7 @@ public class RentController {
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateRent(
             @PathVariable("id") Long id,
-            @RequestBody Rent rent
+            @Valid @RequestBody Rent rent
     ) {
         log.info("PUT /rent/{}", id);
         rentServices.updateRent(rent, id);

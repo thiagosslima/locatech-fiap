@@ -4,6 +4,7 @@ import br.com.fiap.locatech.locatech.dtos.request.VehicleRequestDto;
 import br.com.fiap.locatech.locatech.dtos.response.VehicleResponseDto;
 import br.com.fiap.locatech.locatech.services.VehiclesServices;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -46,7 +47,7 @@ public class VehicleController {
 
     @PostMapping
     public ResponseEntity<Void> saveVehicle(
-            @RequestBody VehicleRequestDto dto
+            @Valid @RequestBody VehicleRequestDto dto
             ) {
         log.info("POST /vehicles - Vehicle: {}", dto);
         vehiclesServices.saveVehicle(dto);
@@ -56,7 +57,7 @@ public class VehicleController {
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateVehicle(
             @PathVariable("id") Long id,
-            @RequestBody VehicleRequestDto dto
+            @Valid @RequestBody VehicleRequestDto dto
     ) {
         log.info("PUT /vehicles/{}", id);
         vehiclesServices.updateVehicle(dto, id);

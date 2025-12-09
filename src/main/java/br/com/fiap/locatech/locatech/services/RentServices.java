@@ -3,15 +3,15 @@ package br.com.fiap.locatech.locatech.services;
 import br.com.fiap.locatech.locatech.dtos.request.RentRequestDto;
 import br.com.fiap.locatech.locatech.dtos.response.RentResponseDto;
 import br.com.fiap.locatech.locatech.entities.Rent;
-import br.com.fiap.locatech.locatech.entities.Vehicle;
+import br.com.fiap.locatech.locatech.exceptions.EndDateGreaterThanStartDateException;
 import br.com.fiap.locatech.locatech.exceptions.IsNotAvailableException;
 import br.com.fiap.locatech.locatech.exceptions.ResourceNotFoundException;
 import br.com.fiap.locatech.locatech.repositories.RentRepository;
-import br.com.fiap.locatech.locatech.repositories.VehicleRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,11 +19,13 @@ import java.util.Optional;
 public class RentServices {
 
     private final RentRepository rentRepository;
-    private final VehicleRepository vehicleRepository;
+    private final VehiclesServices vehiclesServices;
+    private final PersonServices personServices;
 
-    public RentServices(RentRepository rentRepository, VehicleRepository vehicleRepository) {
+    public RentServices(RentRepository rentRepository, VehiclesServices vehiclesServices, PersonServices personServices) {
         this.rentRepository = rentRepository;
-        this.vehicleRepository = vehicleRepository;
+        this.vehiclesServices = vehiclesServices;
+        this.personServices = personServices;
     }
 
     public List<RentResponseDto> findAllRent(int page, int size) {
@@ -41,14 +43,13 @@ public class RentServices {
     }
 
     public void saveRent(RentRequestDto rent) {
-        if(isAvailableForRent(rent.vehicleId())){
+        if (isAvailableForRent(rent.vehicleId(), rent.startDate(), rent.endDate())) {
             var rentEntity = calculateRentValue(rent);
             var save = rentRepository.save(rentEntity);
             Assert.state(save == 1, "Error saving rent " + rent.personId());
         } else {
             throw new IsNotAvailableException("Vehicle not available for rent " + rent.vehicleId());
         }
-
     }
 
     public void updateRent(Rent rent, Long id) {
@@ -66,15 +67,22 @@ public class RentServices {
     }
 
     private Rent calculateRentValue(RentRequestDto dto) {
-        var vehicle = vehicleRepository.findById(dto.vehicleId())
-                .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found " + dto.vehicleId()));
+        validateEndDateGreaterThanStartDate(dto);
 
+        personServices.findPersonById(dto.personId()).orElseThrow();
+        var vehicle = vehiclesServices.findVehicleById(dto.vehicleId()).orElseThrow();
         var quantityOfDays = BigDecimal.valueOf(dto.endDate().getDayOfYear() - dto.startDate().getDayOfYear());
         var price = vehicle.getDailyValue().multiply(quantityOfDays);
         return new Rent(dto, price);
     }
 
-    public boolean isAvailableForRent(Long vehicleId) {
-        return rentRepository.existsById(vehicleId);
+    private void validateEndDateGreaterThanStartDate(RentRequestDto dto) {
+        if (dto.endDate().isBefore(dto.startDate())) {
+            throw new EndDateGreaterThanStartDateException("End date must be after start date");
+        }
+    }
+
+    public boolean isAvailableForRent(Long vehicleId, LocalDate startDate, LocalDate endDate) {
+        return !rentRepository.existsByIdAndBetweenStartDateAndEndDate(vehicleId, startDate, endDate);
     }
 }

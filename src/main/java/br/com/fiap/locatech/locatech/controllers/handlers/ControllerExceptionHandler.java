@@ -1,6 +1,8 @@
 package br.com.fiap.locatech.locatech.controllers.handlers;
 
 import br.com.fiap.locatech.locatech.dtos.ResponseError;
+import br.com.fiap.locatech.locatech.exceptions.EndDateGreaterThanStartDateException;
+import br.com.fiap.locatech.locatech.exceptions.IsNotAvailableException;
 import br.com.fiap.locatech.locatech.exceptions.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +33,22 @@ public class ControllerExceptionHandler {
         for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
             fieldErrors.add(fieldError.getField() + ": " + fieldError.getDefaultMessage());
         }
+        return ResponseEntity.status(status.value()).body(new ResponseError(fieldErrors, status, LocalDateTime.now()));
+    }
+
+    @ExceptionHandler(IsNotAvailableException.class)
+    public ResponseEntity<ResponseError> handleIsNotAvailable(IsNotAvailableException ex) {
+        var status = HttpStatus.BAD_REQUEST;
+        List<String> fieldErrors = new ArrayList<>();
+        fieldErrors.add(ex.getMessage());
+        return ResponseEntity.status(status.value()).body(new ResponseError(fieldErrors, status, LocalDateTime.now()));
+    }
+
+    @ExceptionHandler(EndDateGreaterThanStartDateException.class)
+    public ResponseEntity<ResponseError> handleEndDateGreaterThanStartDate(EndDateGreaterThanStartDateException ex) {
+        var status = HttpStatus.BAD_REQUEST;
+        List<String> fieldErrors = new ArrayList<>();
+        fieldErrors.add(ex.getMessage());
         return ResponseEntity.status(status.value()).body(new ResponseError(fieldErrors, status, LocalDateTime.now()));
     }
 

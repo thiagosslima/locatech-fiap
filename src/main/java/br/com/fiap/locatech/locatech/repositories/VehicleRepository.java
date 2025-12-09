@@ -16,5 +16,4 @@ public interface VehicleRepository {
     Integer update(Vehicle vehicle, Long id);
 
     Integer delete(Long id);
-
 }

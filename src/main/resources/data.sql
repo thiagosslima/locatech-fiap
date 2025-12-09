@@ -5,10 +5,10 @@ DROP TABLE IF EXISTS rent;
 CREATE TABLE vehicles
 (
     id               BIGINT AUTO_INCREMENT PRIMARY KEY,
-    mark             VARCHAR(50) NOT NULL,
-    model            VARCHAR(50) NOT NULL,
-    plate            VARCHAR(10) NOT NULL,
-    manufacture_year INT NOT NULL,
+    mark             VARCHAR(50)    NOT NULL,
+    model            VARCHAR(50)    NOT NULL,
+    plate            VARCHAR(10)    NOT NULL,
+    manufacture_year INT            NOT NULL,
     color            VARCHAR(30),
     daily_value      DECIMAL(10, 2) NOT NULL
 );
@@ -17,7 +17,7 @@ CREATE TABLE persons
 (
     id       BIGINT AUTO_INCREMENT PRIMARY KEY,
     name     VARCHAR(100) NOT NULL,
-    document VARCHAR(30) NOT NULL,
+    document VARCHAR(30)  NOT NULL,
     phone    VARCHAR(30),
     email    VARCHAR(100)
 );
@@ -25,10 +25,10 @@ CREATE TABLE persons
 CREATE TABLE rent
 (
     id         BIGINT AUTO_INCREMENT PRIMARY KEY,
-    person_id  BIGINT NOT NULL,
-    vehicle_id BIGINT NOT NULL,
-    start_date DATE   NOT NULL,
-    end_date   DATE,
+    person_id  BIGINT         NOT NULL,
+    vehicle_id BIGINT         NOT NULL,
+    start_date DATE           NOT NULL,
+    end_date   DATE           NOT NULL,
     price      DECIMAL(10, 2) NOT NULL,
     FOREIGN KEY (person_id) REFERENCES persons (id),
     FOREIGN KEY (vehicle_id) REFERENCES vehicles (id)
@@ -50,13 +50,15 @@ VALUES ('Thiago Silva', '123.456.789-00', '+55 11 91234-5678', 'thiago@example.c
 
 
 INSERT INTO rent (person_id, vehicle_id, start_date, end_date, price)
-VALUES (1, 1, DATE '2024-01-10', DATE '2024-01-15', 750.00),
-       (2, 2, DATE '2024-02-01', DATE '2024-02-05', 480.00),
-       (1, 2, DATE '2025-06-01', NULL, 300.00),
-       (3, 3, DATE '2024-03-10', DATE '2024-03-12', 260.00),
-       (4, 4, DATE '2024-04-05', DATE '2024-04-10', 450.00),
+VALUES (1, 1, DATE '2025-01-10', DATE '2024-01-15', 750.00),
+       (2, 3, DATE '2025-02-01', DATE '2024-02-05', 480.00),
+       (3, 2, DATE '2025-03-10', DATE '2024-03-12', 260.00),
+       (4, 4, DATE '2025-04-05', DATE '2024-04-10', 450.00),
        (5, 5, DATE '2025-07-01', DATE '2025-07-03', 280.00),
-       (2, 3, DATE '2025-08-15', NULL, 390.00),
-       (1, 5, DATE '2025-09-01', DATE '2025-09-05', 700.00);
+       (1, 5, DATE '2025-09-01', DATE '2025-09-05', 700.00),
+       (1, 1, DATE '2025-12-01', DATE '2025-12-10', 1500.00),
+       (2, 1, DATE '2025-12-12', DATE '2025-12-14', 300.00),
+       (1, 2, DATE '2025-12-15', DATE '2025-12-17', 240.00);
+
 
 

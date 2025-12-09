@@ -4,6 +4,7 @@ import br.com.fiap.locatech.locatech.entities.Rent;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -81,10 +82,17 @@ public class RentRepositoryImpl implements RentRepository {
     }
 
     @Override
-    public boolean existsById(Long vehicleId) {
+    public boolean existsByIdAndBetweenStartDateAndEndDate(Long vehicleId, LocalDate startDate, LocalDate endDate) {
         return this.jdbcClient
-                .sql("SELECT 1 FROM rent WHERE vehicle_id = :vehicleId LIMIT 1")
+                .sql("SELECT 1 " +
+                        "FROM rent " +
+                        "WHERE vehicle_id = :vehicleId " +
+                        "  AND (start_date BETWEEN :startDate AND :endDate " +
+                        "         OR end_date BETWEEN :startDate AND :endDate)" +
+                        "LIMIT 1")
                 .param("vehicleId", vehicleId)
+                .param("startDate", startDate)
+                .param("endDate", endDate)
                 .query(Integer.class)
                 .optional()
                 .isPresent();

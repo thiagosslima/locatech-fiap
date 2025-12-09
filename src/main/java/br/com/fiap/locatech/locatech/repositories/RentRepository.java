@@ -2,6 +2,7 @@ package br.com.fiap.locatech.locatech.repositories;
 
 import br.com.fiap.locatech.locatech.entities.Rent;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,5 +18,5 @@ public interface RentRepository {
 
     Integer delete(Long id);
 
-    boolean existsById(Long vehicleId);
+    boolean existsByIdAndBetweenStartDateAndEndDate(Long vehicleId, LocalDate startDate, LocalDate endDate);
 }
